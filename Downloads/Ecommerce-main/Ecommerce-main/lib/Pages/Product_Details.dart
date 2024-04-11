@@ -193,38 +193,38 @@ class ProductDetails extends StatelessWidget {
                   // SizedBox(height: 30),
 
                   // DropdownButton for selecting size
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'View Size: ',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                        ),
-                        DropdownButton<String>(
-                          iconEnabledColor: Colors.red,
-                          value: selectedSize,
-                          onChanged: (String? newValue) {
-                            // Update the selected size when an item is selected
-                            selectedSize = newValue;
-                            // Rebuild the UI
-                            Get.forceAppUpdate();
-                          },
-                          items: sizes
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 0),
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //     children: [
+                  //       Text(
+                  //         'View Size: ',
+                  //         style: TextStyle(
+                  //           fontWeight: FontWeight.bold,
+                  //           fontSize: 18,
+                  //         ),
+                  //       ),
+                  //       DropdownButton<String>(
+                  //         iconEnabledColor: Colors.red,
+                  //         value: selectedSize,
+                  //         onChanged: (String? newValue) {
+                  //           // Update the selected size when an item is selected
+                  //           selectedSize = newValue;
+                  //           // Rebuild the UI
+                  //           Get.forceAppUpdate();
+                  //         },
+                  //         items: sizes
+                  //             .map<DropdownMenuItem<String>>((String value) {
+                  //           return DropdownMenuItem<String>(
+                  //             value: value,
+                  //             child: Text(value),
+                  //           );
+                  //         }).toList(),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
 
                   Center(
                     child: ElevatedButton(

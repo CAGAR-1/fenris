@@ -323,6 +323,7 @@ class _MyCartState extends State<MyCart> {
                                 jsonDecode(jsonEncode(products));
                             // print(productsList);
                             // Navigate to the checkout screen
+
                             Get.to(Checkout(
                               totalPrice:
                                   getTotalPrice().toInt() + shippingCost,
