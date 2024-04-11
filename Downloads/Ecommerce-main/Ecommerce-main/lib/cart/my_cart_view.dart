@@ -17,14 +17,17 @@ class MyCart extends StatefulWidget {
 
 class _MyCartState extends State<MyCart> {
   Map<int, int> quantities = {};
+  Map<int, String?> selectedSizes =
+      {}; // Map to store selected sizes for each product
 
   @override
   void initState() {
     super.initState();
-    // Initialize quantities for each product
+    // Initialize quantities and selectedSizes for each product
     final wishlistController = Get.find<WishlistController>();
     for (int i = 0; i < wishlistController.cart.length; i++) {
       quantities[i] = 1; // Default quantity is 1
+      selectedSizes[i] = null; // Default selected size is null
     }
   }
 
@@ -38,7 +41,7 @@ class _MyCartState extends State<MyCart> {
     return totalPrice;
   }
 
-  int shppingcost = 300;
+  int shippingCost = 300;
 
   void incrementCounter(int index) {
     final wishlistController = Get.find<WishlistController>();
@@ -111,18 +114,21 @@ class _MyCartState extends State<MyCart> {
                             ListTile(
                               tileColor: Colors.blue[50],
                               leading: Image(
-                                  image: NetworkImage(
-                                      PRODUCT_IMAGE_URL + cartItem.image),
-                                  height: 60,
-                                  width: 60,
-                                  fit: BoxFit.cover),
+                                image: NetworkImage(
+                                  PRODUCT_IMAGE_URL + cartItem.image,
+                                ),
+                                height: 60,
+                                width: 60,
+                                fit: BoxFit.cover,
+                              ),
                               title: Row(
                                 children: [
                                   Expanded(
                                     child: Text(
                                       cartItem.name,
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold),
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                   IconButton(
@@ -193,10 +199,39 @@ class _MyCartState extends State<MyCart> {
                                       ),
                                     ],
                                   ),
+                                  SizedBox(height: 20),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    child: DropdownButton<String>(
+                                      hint: Text('Select Size'),
+                                      value: selectedSizes[index],
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          selectedSizes[index] = newValue;
+                                        });
+                                      },
+                                      items: [
+                                        'Small',
+                                        'Medium',
+                                        'Large',
+                                        'XL',
+                                        'XXL',
+                                        'XXXL'
+                                      ].map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
                             Divider(), // Divider between items
+                            SizedBox(height: 20),
                           ],
                         );
                       },
@@ -229,8 +264,7 @@ class _MyCartState extends State<MyCart> {
                             style: TextStyle(fontSize: 18, color: Colors.grey),
                           ),
                           Text(
-                            "Rs " + shppingcost.toString(),
-                            // 'Rs ${getShippingCost(getTotalPrice())}',
+                            "Rs " + shippingCost.toString(),
                             style: TextStyle(fontSize: 18),
                           ),
                         ],
@@ -247,9 +281,7 @@ class _MyCartState extends State<MyCart> {
                             style: TextStyle(fontSize: 20, color: Colors.grey),
                           ),
                           Text(
-                            (getTotalPrice() + shppingcost).toString(),
-
-                            // 'Rs ${getTotalPrice() + getShippingCost(getTotalPrice())}', // Display total price
+                            (getTotalPrice() + shippingCost).toString(),
                             style: TextStyle(fontSize: 20),
                           ),
                         ],
@@ -259,31 +291,44 @@ class _MyCartState extends State<MyCart> {
                       padding: const EdgeInsets.all(20),
                       child: ElevatedButton(
                         onPressed: () {
-                          // Print cart product details and quantities
-                          final wishlistController =
-                              Get.find<WishlistController>();
-                          List<Map<String, dynamic>> products = [];
-                          for (int i = 0;
-                              i < wishlistController.cart.length;
-                              i++) {
-                            final cartItem = wishlistController.cart[i];
-                            final quantity = quantities[i] ?? 0;
-                            // Add product details to the list
-                            products.add({
-                              'product_id': cartItem.id,
-                              'quantity': quantity,
-                            });
+                          // Check if any product has a null selected size
+                          if (selectedSizes.containsValue(null)) {
+                            // Show error message if any product has a null selected size
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content:
+                                    Text('Please select size for each product'),
+                              ),
+                            );
+                          } else {
+                            // Proceed to checkout if all products have selected sizes
+                            final wishlistController =
+                                Get.find<WishlistController>();
+                            List<Map<String, dynamic>> products = [];
+                            for (int i = 0;
+                                i < wishlistController.cart.length;
+                                i++) {
+                              final cartItem = wishlistController.cart[i];
+                              final quantity = quantities[i] ?? 0;
+                              final size = selectedSizes[i]!;
+                              // Add product details to the list
+                              products.add({
+                                'product_id': cartItem.id,
+                                'quantity': quantity,
+                                'size': size,
+                              });
+                            }
+                            // Convert the list to JSON format
+                            List<dynamic> productsList =
+                                jsonDecode(jsonEncode(products));
+                            // print(productsList);
+                            // Navigate to the checkout screen
+                            Get.to(Checkout(
+                              totalPrice:
+                                  getTotalPrice().toInt() + shippingCost,
+                              productJsonData: productsList,
+                            ));
                           }
-                          // Convert the list to JSON format
-                          List<dynamic> productsList =
-                              jsonDecode(jsonEncode(products));
-                          print(productsList);
-
-                          // Navigate to the checkout screen
-                          Get.to(Checkout(
-                            totalPrice: getTotalPrice().toInt() + shppingcost,
-                            productJsonData: productsList,
-                          ));
                         },
                         child: Text(
                           "Go To Checkout",

@@ -206,6 +206,7 @@ class _CheckoutState extends State<Checkout> {
           "delivery_address": selectedLocation,
           "products": widget.productJsonData
         };
+        print(data);
         Get.put(BuyController().add(data));
         Get.to(OrderSuccessful());
       }

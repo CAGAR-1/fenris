@@ -37,7 +37,7 @@ class BestSelling extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ProductDetails(
-                            productss: _.products[index],
+                            productss: _.getNewProduct[index],
                           ),
                         ),
                       );

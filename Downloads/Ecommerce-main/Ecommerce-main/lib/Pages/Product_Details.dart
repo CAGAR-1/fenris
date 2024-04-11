@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,6 +11,12 @@ class ProductDetails extends StatelessWidget {
   final GetProducts productss; // Change the type to GetProducts
 
   ProductDetails({required this.productss}); // Update the constructor
+
+  // Define a list of sizes
+  final List<String> sizes = ['Small', 'Medium', 'Large', 'XL', 'XXL', 'XXXL'];
+
+  // Define a variable to store the selected size
+  String? selectedSize;
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +162,7 @@ class ProductDetails extends StatelessWidget {
                         "${double.parse(productss.discount) > 0 ? productss.discount : productss.price}",
                         style: TextStyle(
                           fontSize: 20,
-                          color: Colors.green,
+                          color: Colors.blue,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -177,7 +181,7 @@ class ProductDetails extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        productss.quantity + " KG",
+                        productss.quantity,
                         style: TextStyle(
                           fontSize: 20,
                           color: Colors.blue[700],
@@ -186,7 +190,42 @@ class ProductDetails extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 30),
+                  // SizedBox(height: 30),
+
+                  // DropdownButton for selecting size
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'View Size: ',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                        DropdownButton<String>(
+                          iconEnabledColor: Colors.red,
+                          value: selectedSize,
+                          onChanged: (String? newValue) {
+                            // Update the selected size when an item is selected
+                            selectedSize = newValue;
+                            // Rebuild the UI
+                            Get.forceAppUpdate();
+                          },
+                          items: sizes
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
+                  ),
+
                   Center(
                     child: ElevatedButton(
                       onPressed: () {

@@ -80,7 +80,7 @@ class ProductItemWidget extends StatelessWidget {
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 8),
                                 child: Text(
-                                  "Quantity = ${_.getDiscountProduct[index].quantity}KG",
+                                  "Quantity = ${_.getDiscountProduct[index].quantity}",
                                   style: TextStyle(
                                     fontSize: 15,
                                   ),
